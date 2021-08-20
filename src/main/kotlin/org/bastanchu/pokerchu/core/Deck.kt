@@ -28,4 +28,12 @@ abstract class Deck() {
     fun getCard():Card {
         return deck.pop();
     }
+
+    fun containsCard(card:Card):Boolean {
+        return deck.contains(card);
+    }
+
+    override fun toString(): String {
+        return deck.toString();
+    }
 }
