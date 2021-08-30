@@ -22,6 +22,35 @@ class PokerHandTest {
                                                 Card(Card.Suit.SPADES, Card.Rank.N6)));
     }
 
+    // POKER Card Tests
+
+    @Test
+    fun shouldRecognizeAPokerCardsHand() {
+        val pokerHand = PokerHand(arrayOf<Card>(Card(Card.Suit.CLUBS, Card.Rank.N4),
+            Card(Card.Suit.HEARTS, Card.Rank.ACE),
+            Card(Card.Suit.HEARTS, Card.Rank.N4),
+            Card(Card.Suit.SPADES, Card.Rank.N4),
+            Card(Card.Suit.DIAMONDS, Card.Rank.N4)) );
+        val pair = pokerHand.getRank();
+        assertEquals(PokerHand.Rank.POKER, pair.first);
+        assertEquals(Card.Rank.N4, pair.second[0].rank);
+    }
+
+    // FULL Card Tests
+
+    @Test
+    fun shouldRecognizeAFullCardsHand() {
+        val pokerHand = PokerHand(arrayOf<Card>(Card(Card.Suit.CLUBS, Card.Rank.N4),
+            Card(Card.Suit.HEARTS, Card.Rank.ACE),
+            Card(Card.Suit.HEARTS, Card.Rank.N4),
+            Card(Card.Suit.SPADES, Card.Rank.N4),
+            Card(Card.Suit.SPADES, Card.Rank.ACE)) );
+        val pair = pokerHand.getRank();
+        assertEquals(PokerHand.Rank.FULL, pair.first);
+        assertEquals(Card.Rank.N4, pair.second[0].rank);
+        assertEquals(Card.Rank.ACE, pair.second[3].rank);
+    }
+
     // TRIPLE Cards tests
 
     @Test
@@ -33,7 +62,22 @@ class PokerHandTest {
             Card(Card.Suit.SPADES, Card.Rank.N6)) );
         val pair = pokerHand.getRank();
         assertEquals(PokerHand.Rank.TRIPLE, pair.first);
-        assertEquals(Card(Card.Suit.CLUBS, Card.Rank.N4), pair.second);
+        assertEquals(Card.Rank.N4, pair.second[0].rank);
+    }
+
+    // DOUBLE PAIR Cards tests
+
+    @Test
+    fun shouldRecognizeADoublePairCardsHand() {
+        val pokerHand = PokerHand(arrayOf<Card>(Card(Card.Suit.SPADES, Card.Rank.N2),
+            Card(Card.Suit.HEARTS, Card.Rank.ACE),
+            Card(Card.Suit.HEARTS, Card.Rank.N4),
+            Card(Card.Suit.SPADES, Card.Rank.N4),
+            Card(Card.Suit.CLUBS, Card.Rank.N2)) );
+        val pair = pokerHand.getRank();
+        assertEquals(PokerHand.Rank.DOUBLE_PAIR, pair.first);
+        assertEquals(Card.Rank.N4, pair.second[0].rank);
+        assertEquals(Card.Rank.N2, pair.second[2].rank);
     }
 
     // PAIR Cards tests
@@ -47,7 +91,7 @@ class PokerHandTest {
                                                 Card(Card.Suit.SPADES, Card.Rank.N6)) );
         val pair = pokerHand.getRank();
         assertEquals(PokerHand.Rank.PAIR, pair.first);
-        assertEquals(Card(Card.Suit.HEARTS, Card.Rank.N4), pair.second);
+        assertEquals(Card.Rank.N4, pair.second[0].rank);
     }
 
     //HIGHEST Card tests
@@ -61,6 +105,6 @@ class PokerHandTest {
                                                 Card(Card.Suit.SPADES, Card.Rank.N6)) );
         val pair = pokerHand.getRank();
         assertEquals(PokerHand.Rank.HIGHEST, pair.first);
-        assertEquals(Card(Card.Suit.HEARTS, Card.Rank.ACE), pair.second);
+        assertEquals(Card.Rank.ACE, pair.second[0].rank);
     }
 }

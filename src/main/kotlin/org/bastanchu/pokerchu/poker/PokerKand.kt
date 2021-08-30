@@ -1,6 +1,7 @@
 package org.bastanchu.pokerchu.poker
 
 import org.bastanchu.pokerchu.core.Card
+import kotlin.collections.ArrayList
 
 class PokerHand @Throws(RuntimeException::class) constructor(val cards:Array<Card>)  {
 
@@ -26,54 +27,70 @@ class PokerHand @Throws(RuntimeException::class) constructor(val cards:Array<Car
         return false;
     }
 
-    fun getRank():Pair<Rank, Card> {
-        val equalsRangeCards = numEqualsRangeCard();
-        if (equalsRangeCards.second == 4) {
-            return Pair(Rank.POKER, equalsRangeCards.first);
-        } else if (equalsRangeCards.second == 3) {
-            return Pair(Rank.TRIPLE, equalsRangeCards.first);
-        } else if (equalsRangeCards.second == 2) {
-            return Pair(Rank.PAIR, equalsRangeCards.first);
+    fun getRank():Pair<Rank, Array<Card>> {
+        val decomposedArray = arraysEqualsRangeCard(cards);
+        val firstArray = decomposedArray[0];
+        val finalArray = decomposedArray.flatMap( { it -> it.asList() } ).toTypedArray();
+        if (firstArray.size == 4) {
+            return Pair(Rank.POKER, finalArray);
+        } else if (firstArray.size == 3) {
+            val secondArray = decomposedArray[1];
+            if (secondArray.size == 2) {
+                return Pair(Rank.FULL, finalArray);
+            } else {
+                return Pair(Rank.TRIPLE, finalArray);
+            }
+        } else if (firstArray.size == 2) {
+            val secondArray = decomposedArray[1];
+            if (secondArray.size == 2) {
+                return Pair(Rank.DOUBLE_PAIR, finalArray);
+            } else {
+                return Pair(Rank.PAIR, finalArray);
+            }
         } else {
-            return Pair(Rank.HIGHEST, equalsRangeCards.first);
+            return Pair(Rank.HIGHEST, finalArray);
         }
     }
 
-    private fun numEqualsRangeCard():Pair<Card, Int> {
-        val seeker = {card:Card ->
-            var num = 1;
-            for (i in 0..4) {
-                if (!card.equals(cards[i])) {
-                    if (card.rank == cards[i].rank) {
-                        num++;
-                    }
+    /**
+     * Decompose an array of cards into subarrays of repeating range cards.
+     * The array is sorted from highest subarray length to lowest and for the same size
+     * from highest rank card to lowest
+     * @param cards The array to decompose.
+     * @return A sorted array of arrays of cards.
+     */
+    private fun arraysEqualsRangeCard(cards:Array<Card>):Array<Array<Card>> {
+        if (cards.size == 0) {
+            return ArrayList<Array<Card>>().toTypedArray();
+        }
+        else if (cards.size == 1) {
+            return arrayOf(cards);
+        } else {
+            val firstCard = cards[0];
+            var returningCards = ArrayList<Card>();
+            var remainingCards = ArrayList<Card>();
+            returningCards.add(firstCard);
+            for (i in 1..cards.lastIndex) {
+                val currentCard = cards[i];
+                if (currentCard.rank.equals(firstCard.rank)) {
+                    returningCards.add(currentCard);
+                } else {
+                    remainingCards.add(currentCard);
                 }
             }
-            num;
-        };
-        var highestRank = 1;
-        var highestPair:Pair<Card, Int>? = null;
-        for(i in 0..4) {
-            val currRank = seeker(cards[i]);
-            if (currRank > highestRank) {
-                highestRank = currRank;
-                highestPair = Pair(cards[i], highestRank);
-            }
+            var returningList = arraysEqualsRangeCard(remainingCards.toTypedArray()).toList();
+            var sorteableList = ArrayList<Array<Card>>();
+            sorteableList.addAll(returningList.toTypedArray());
+            sorteableList.add(returningCards.toTypedArray());
+            val comparator = {e1:Array<Card>, e2:Array<Card> ->
+                if (e1.size != e2.size) {
+                    - e1.size.compareTo(e2.size);
+                } else {
+                    - e1[0].rank.compareTo(e2[0].rank)
+                }
+            };
+            val sortedList = sorteableList.sortedWith(comparator);
+            return sortedList.toTypedArray();
         }
-        if (highestPair != null) {
-            return highestPair;
-        } else {
-            return Pair(highestCard(), 1);
-        }
-    }
-
-    private fun highestCard():Card {
-        var highestCard:Card = cards[0];
-        for(i in 1..4) {
-            if (highestCard.rank < cards[i].rank) {
-                highestCard = cards[i];
-            }
-        }
-        return highestCard;
     }
 }
