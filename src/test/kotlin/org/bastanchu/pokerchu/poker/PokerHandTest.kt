@@ -22,6 +22,25 @@ class PokerHandTest {
                                                 Card(Card.Suit.SPADES, Card.Rank.N6)));
     }
 
+
+    // COLOR STRAIGHT Card Tests
+
+    @Test
+    fun shouldRecognizeAColorStraightCardsHand() {
+        val pokerHand = PokerHand(
+            arrayOf<Card>(
+                Card(Card.Suit.DIAMONDS, Card.Rank.N3),
+                Card(Card.Suit.DIAMONDS, Card.Rank.N4),
+                Card(Card.Suit.DIAMONDS, Card.Rank.KING),
+                Card(Card.Suit.DIAMONDS, Card.Rank.ACE),
+                Card(Card.Suit.DIAMONDS, Card.Rank.N2)
+            )
+        );
+        val pair = pokerHand.getRank();
+        assertEquals(PokerHand.Rank.COLOR_STRAIGHT, pair.first);
+        assertEquals(Card.Rank.N4, pair.second[0].rank);
+    }
+
     // POKER Card Tests
 
     @Test
@@ -49,6 +68,45 @@ class PokerHandTest {
         assertEquals(PokerHand.Rank.FULL, pair.first);
         assertEquals(Card.Rank.N4, pair.second[0].rank);
         assertEquals(Card.Rank.ACE, pair.second[3].rank);
+    }
+
+    // COLOR Card Tests
+
+    @Test
+    fun shouldRecognizeASimpleColorCardsHand() {
+        val pokerHand = PokerHand(arrayOf<Card>(Card(Card.Suit.CLUBS, Card.Rank.N4),
+            Card(Card.Suit.CLUBS, Card.Rank.JACK),
+            Card(Card.Suit.CLUBS, Card.Rank.N3),
+            Card(Card.Suit.CLUBS, Card.Rank.N2),
+            Card(Card.Suit.CLUBS, Card.Rank.N5)) );
+        val pair = pokerHand.getRank();
+        assertEquals(PokerHand.Rank.COLOR, pair.first);
+        assertEquals(Card.Rank.JACK, pair.second[0].rank);
+    }
+
+    // STRAIGHT Cards tests
+    @Test
+    fun shouldRecognizeASimpleStraightCardsHand() {
+        val pokerHand = PokerHand(arrayOf<Card>(Card(Card.Suit.CLUBS, Card.Rank.JACK),
+            Card(Card.Suit.HEARTS, Card.Rank.QUEEN),
+            Card(Card.Suit.HEARTS, Card.Rank.N9),
+            Card(Card.Suit.SPADES, Card.Rank.N10),
+            Card(Card.Suit.SPADES, Card.Rank.N8)) );
+        val pair = pokerHand.getRank();
+        assertEquals(PokerHand.Rank.STRAIGHT, pair.first);
+        assertEquals(Card.Rank.QUEEN, pair.second[0].rank);
+    }
+
+    @Test
+    fun shouldRecognizeAPartedStraightCardsHand() {
+        val pokerHand = PokerHand(arrayOf<Card>(Card(Card.Suit.CLUBS, Card.Rank.N2),
+            Card(Card.Suit.HEARTS, Card.Rank.N3),
+            Card(Card.Suit.HEARTS, Card.Rank.QUEEN),
+            Card(Card.Suit.SPADES, Card.Rank.KING),
+            Card(Card.Suit.SPADES, Card.Rank.ACE)) );
+        val pair = pokerHand.getRank();
+        assertEquals(PokerHand.Rank.STRAIGHT, pair.first);
+        assertEquals(Card.Rank.N3, pair.second[0].rank);
     }
 
     // TRIPLE Cards tests

@@ -5,7 +5,7 @@ import kotlin.collections.ArrayList
 
 class PokerHand @Throws(RuntimeException::class) constructor(val cards:Array<Card>)  {
 
-    enum class Rank{HIGHEST, PAIR, DOUBLE_PAIR, TRIPLE, STAIR, COLOR, FULL, POKER, COLOR_STAIR }
+    enum class Rank{HIGHEST, PAIR, DOUBLE_PAIR, TRIPLE, STRAIGHT, COLOR, FULL, POKER, COLOR_STRAIGHT }
 
     init {
         if (cards.size != 5) {
@@ -31,7 +31,12 @@ class PokerHand @Throws(RuntimeException::class) constructor(val cards:Array<Car
         val decomposedArray = arraysEqualsRangeCard(cards);
         val firstArray = decomposedArray[0];
         val finalArray = decomposedArray.flatMap( { it -> it.asList() } ).toTypedArray();
-        if (firstArray.size == 4) {
+        val isColor = cardsInColor(finalArray);
+        val finalStraightArray = cardsInStraight(finalArray);
+        if (isColor && (finalStraightArray != null)) {
+            return Pair(Rank.COLOR_STRAIGHT, finalStraightArray);
+        }
+        else if (firstArray.size == 4) {
             return Pair(Rank.POKER, finalArray);
         } else if (firstArray.size == 3) {
             val secondArray = decomposedArray[1];
@@ -48,7 +53,14 @@ class PokerHand @Throws(RuntimeException::class) constructor(val cards:Array<Car
                 return Pair(Rank.PAIR, finalArray);
             }
         } else {
-            return Pair(Rank.HIGHEST, finalArray);
+            if (isColor) {
+                return Pair(Rank.COLOR, finalArray);
+            }
+            else if (finalStraightArray != null) {
+                return Pair(Rank.STRAIGHT, finalStraightArray);
+            } else {
+                return Pair(Rank.HIGHEST, finalArray);
+            }
         }
     }
 
@@ -92,5 +104,84 @@ class PokerHand @Throws(RuntimeException::class) constructor(val cards:Array<Car
             val sortedList = sorteableList.sortedWith(comparator);
             return sortedList.toTypedArray();
         }
+    }
+
+    private fun cardsInStraight(cards:Array<Card>):Array<Card>? {
+        val decomposedArray = arraysEqualsRangeCard(cards);
+        if (decomposedArray.size == 5) {
+            // There should be five different cards to have a straight
+            val sortedArray = decomposedArray.flatMap( { it -> it.asList() } ).toTypedArray();
+            if (cardsInSimpleStraightSortedArray(cards)) {
+                // Simple straight
+                return cards;
+            } else {
+                // Maybe straight across ace
+                return cardsInPartedStraightSortedArray(cards);
+            }
+        } else {
+            return null;
+        }
+    }
+
+    private fun cardsInSimpleStraightSortedArray(cards:Array<Card>):Boolean {
+        if (cards.size > 1) {
+            var isStraight = true;
+            var i = 0;
+            do {
+                val currentCard = cards[i];
+                val currentNextCard = cards[i + 1];
+                isStraight = currentCard.rank.ordinal - currentNextCard.rank.ordinal == 1;
+                i++;
+            } while(isStraight && i < cards.size - 1);
+            return isStraight;
+        } else {
+            return true;
+        }
+    }
+
+    private fun cardsInPartedStraightSortedArray(cards:Array<Card>):Array<Card>? {
+        var partitionIndex:Int? = null;
+        var i = 0;
+        do {
+            val currentCard = cards[i];
+            val currentNextCard = cards[i + 1];
+            if (currentCard.rank.ordinal - currentNextCard.rank.ordinal != 1) {
+                partitionIndex = i;
+            }
+            i++;
+        } while (partitionIndex == null && i < cards.size - 1);
+        if (partitionIndex == null) {
+            return cards;
+        } else {
+            val upperArray = cards.toMutableList().subList(0, partitionIndex + 1).toTypedArray();
+            val lowerArray = cards.toMutableList().subList(partitionIndex + 1, cards.size).toTypedArray();
+            if (cardsInSimpleStraightSortedArray(upperArray) &&
+                cardsInSimpleStraightSortedArray(lowerArray) &&
+                upperArray[0].rank.equals(Card.Rank.ACE) &&
+                lowerArray[lowerArray.lastIndex].rank.equals(Card.Rank.N2)) {
+                var resultingList = ArrayList<Card>();
+                resultingList.addAll(lowerArray);
+                resultingList.addAll(upperArray);
+                return resultingList.toTypedArray();
+            } else {
+                return null;
+            }
+        }
+    }
+
+    private fun cardsInColor(cards:Array<Card>):Boolean {
+        var detectedSuit:Card.Suit? = null;
+        var inColor = true;
+        var i = 0;
+        while(inColor && (i < cards.size)) {
+            val currentCard = cards[i];
+            if (detectedSuit == null) {
+                detectedSuit = currentCard.suit;
+            } else {
+                inColor = detectedSuit.equals(currentCard.suit);
+            }
+            i++;
+        }
+        return inColor;
     }
 }
