@@ -6,8 +6,6 @@
     </formats>
     <fileSets>
         <fileSet>
-            <!--directory></directory-->
-            <!--outputDirectory>target/site/</outputDirectory-->
             <includes>
                 <include>target/site/jacoco/**</include>
             </includes>
