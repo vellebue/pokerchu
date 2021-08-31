@@ -22,6 +22,27 @@ class PokerHandTest {
                                                 Card(Card.Suit.SPADES, Card.Rank.N6)));
     }
 
+    // Generic comparator test
+
+    @Test
+    fun shouldCompareDifferentRankCardsHands() {
+        val colorStraightHand = PokerHand(
+            arrayOf<Card>(
+                Card(Card.Suit.DIAMONDS, Card.Rank.N3),
+                Card(Card.Suit.DIAMONDS, Card.Rank.N4),
+                Card(Card.Suit.DIAMONDS, Card.Rank.KING),
+                Card(Card.Suit.DIAMONDS, Card.Rank.ACE),
+                Card(Card.Suit.DIAMONDS, Card.Rank.N2)
+            )
+        );
+        val pokerHand = PokerHand(arrayOf<Card>(Card(Card.Suit.CLUBS, Card.Rank.N4),
+            Card(Card.Suit.HEARTS, Card.Rank.ACE),
+            Card(Card.Suit.HEARTS, Card.Rank.N4),
+            Card(Card.Suit.SPADES, Card.Rank.N4),
+            Card(Card.Suit.DIAMONDS, Card.Rank.N4)) );
+        val comparation = pokerHand.compareTo(colorStraightHand);
+        assertTrue(comparation  < 0);
+    }
 
     // COLOR STRAIGHT Card Tests
 
@@ -41,6 +62,29 @@ class PokerHandTest {
         assertEquals(Card.Rank.N4, pair.second[0].rank);
     }
 
+    @Test
+    fun shouldCompareColorStraightCardsHandsCorrectly() {
+        val higherColorStraightHand = PokerHand(
+            arrayOf<Card>(
+                Card(Card.Suit.CLUBS, Card.Rank.N4),
+                Card(Card.Suit.CLUBS, Card.Rank.N3),
+                Card(Card.Suit.CLUBS, Card.Rank.N2),
+                Card(Card.Suit.CLUBS, Card.Rank.N6),
+                Card(Card.Suit.CLUBS, Card.Rank.N5)
+            )
+        );
+        val lowerColorStraightHand = PokerHand(
+            arrayOf<Card>(
+                Card(Card.Suit.DIAMONDS, Card.Rank.N3),
+                Card(Card.Suit.DIAMONDS, Card.Rank.N4),
+                Card(Card.Suit.DIAMONDS, Card.Rank.KING),
+                Card(Card.Suit.DIAMONDS, Card.Rank.ACE),
+                Card(Card.Suit.DIAMONDS, Card.Rank.N2)
+            )
+        );
+        assertTrue(lowerColorStraightHand.compareTo(higherColorStraightHand) < 0);
+    }
+
     // POKER Card Tests
 
     @Test
@@ -55,7 +99,37 @@ class PokerHandTest {
         assertEquals(Card.Rank.N4, pair.second[0].rank);
     }
 
-    // FULL Card Tests
+    @Test
+    fun shouldComparePokertCardsHandsCorrectly() {
+        val pokerHandN4 = PokerHand(arrayOf<Card>(Card(Card.Suit.CLUBS, Card.Rank.N4),
+            Card(Card.Suit.HEARTS, Card.Rank.ACE),
+            Card(Card.Suit.HEARTS, Card.Rank.N4),
+            Card(Card.Suit.SPADES, Card.Rank.N4),
+            Card(Card.Suit.DIAMONDS, Card.Rank.N4)) );
+        val pokerHandAce = PokerHand(arrayOf<Card>(Card(Card.Suit.CLUBS, Card.Rank.ACE),
+            Card(Card.Suit.HEARTS, Card.Rank.ACE),
+            Card(Card.Suit.HEARTS, Card.Rank.N4),
+            Card(Card.Suit.SPADES, Card.Rank.ACE),
+            Card(Card.Suit.DIAMONDS, Card.Rank.ACE)) );
+        assertTrue(pokerHandN4.compareTo(pokerHandAce) < 0);
+    }
+
+    @Test
+    fun shouldComparePokertCardsFifthCardCorrectly() {
+        val pokerHandN4Upper = PokerHand(arrayOf<Card>(Card(Card.Suit.CLUBS, Card.Rank.N4),
+            Card(Card.Suit.HEARTS, Card.Rank.ACE),
+            Card(Card.Suit.HEARTS, Card.Rank.N4),
+            Card(Card.Suit.SPADES, Card.Rank.N4),
+            Card(Card.Suit.DIAMONDS, Card.Rank.N4)) );
+        val pokerHandN4Lower = PokerHand(arrayOf<Card>(Card(Card.Suit.CLUBS, Card.Rank.N4),
+            Card(Card.Suit.HEARTS, Card.Rank.JACK),
+            Card(Card.Suit.HEARTS, Card.Rank.N4),
+            Card(Card.Suit.SPADES, Card.Rank.N4),
+            Card(Card.Suit.DIAMONDS, Card.Rank.N4)) );
+        assertTrue(pokerHandN4Upper.compareTo(pokerHandN4Lower) < 0);
+    }
+
+    // FULL Card Tests TODO Remaining comparation tests here
 
     @Test
     fun shouldRecognizeAFullCardsHand() {

@@ -1,6 +1,6 @@
 package org.bastanchu.pokerchu.core
 
-data class Card(val suit:Suit, val rank:Rank) {
+data class Card(val suit:Suit, val rank:Rank) :Comparable<Card> {
 
     enum class Suit{CLUBS, DIAMONDS, HEARTS, SPADES};
     enum class Rank{N2, N3, N4, N5, N6, N7, N8, N9, N10, JACK, QUEEN, KING, ACE}
@@ -18,5 +18,9 @@ data class Card(val suit:Suit, val rank:Rank) {
         hash =  suit.hashCode();
         hash = 37 * hash + rank.hashCode();
         return hash;
+    }
+
+    override fun compareTo(other: Card): Int {
+        return rank.compareTo(other.rank);
     }
 }

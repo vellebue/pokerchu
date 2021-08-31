@@ -3,7 +3,7 @@ package org.bastanchu.pokerchu.poker
 import org.bastanchu.pokerchu.core.Card
 import kotlin.collections.ArrayList
 
-class PokerHand @Throws(RuntimeException::class) constructor(val cards:Array<Card>)  {
+class PokerHand @Throws(RuntimeException::class) constructor(val cards:Array<Card>) :Comparable<PokerHand> {
 
     enum class Rank{HIGHEST, PAIR, DOUBLE_PAIR, TRIPLE, STRAIGHT, COLOR, FULL, POKER, COLOR_STRAIGHT }
 
@@ -183,5 +183,30 @@ class PokerHand @Throws(RuntimeException::class) constructor(val cards:Array<Car
             i++;
         }
         return inColor;
+    }
+
+    override fun compareTo(other: PokerHand): Int {
+        val thisHandRank = getRank();
+        val otherHandRank = other.getRank();
+        if (!thisHandRank.first.equals(otherHandRank.first)) {
+            return thisHandRank.first.compareTo(otherHandRank.first);
+        } else {
+            // Same rank hands
+            return compareArrays(thisHandRank.second, otherHandRank.second);
+        }
+    }
+
+    private fun compareArrays(first:Array<Card>, second:Array<Card>):Int {
+        if ((first.size == 0) && (second.size == 0)) {
+            return 0;
+        } else {
+            val comparation = first[0].compareTo(second[0]);
+            if (comparation == 0) {
+                return compareArrays(first.toMutableList().subList(1, first.size).toTypedArray(),
+                                     second.toMutableList().subList(1, second.size).toTypedArray());
+            } else {
+                return comparation;
+            }
+        }
     }
 }
