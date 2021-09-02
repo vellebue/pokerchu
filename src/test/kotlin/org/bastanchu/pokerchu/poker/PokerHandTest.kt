@@ -126,10 +126,10 @@ class PokerHandTest {
             Card(Card.Suit.HEARTS, Card.Rank.N4),
             Card(Card.Suit.SPADES, Card.Rank.N4),
             Card(Card.Suit.DIAMONDS, Card.Rank.N4)) );
-        assertTrue(pokerHandN4Upper.compareTo(pokerHandN4Lower) < 0);
+        assertTrue(pokerHandN4Lower.compareTo(pokerHandN4Upper) < 0);
     }
 
-    // FULL Card Tests TODO Remaining comparation tests here
+    // FULL Card Tests
 
     @Test
     fun shouldRecognizeAFullCardsHand() {
@@ -144,6 +144,51 @@ class PokerHandTest {
         assertEquals(Card.Rank.ACE, pair.second[3].rank);
     }
 
+    @Test
+    fun shouldCompareFullCardsHandWithHigherTripleCorrectly() {
+        val upperFullHand = PokerHand(arrayOf<Card>(Card(Card.Suit.CLUBS, Card.Rank.N4),
+            Card(Card.Suit.HEARTS, Card.Rank.ACE),
+            Card(Card.Suit.HEARTS, Card.Rank.N4),
+            Card(Card.Suit.SPADES, Card.Rank.N4),
+            Card(Card.Suit.SPADES, Card.Rank.ACE)) );
+        val lowerFullHand = PokerHand(arrayOf<Card>(Card(Card.Suit.CLUBS, Card.Rank.N2),
+            Card(Card.Suit.HEARTS, Card.Rank.ACE),
+            Card(Card.Suit.HEARTS, Card.Rank.N2),
+            Card(Card.Suit.SPADES, Card.Rank.N2),
+            Card(Card.Suit.SPADES, Card.Rank.ACE)) );
+        assertTrue(lowerFullHand.compareTo(upperFullHand) < 1);
+    }
+
+    @Test
+    fun shouldCompareFullCardsHandWithHigherPairCorrectly() {
+        val upperFullHand = PokerHand(arrayOf<Card>(Card(Card.Suit.CLUBS, Card.Rank.N4),
+            Card(Card.Suit.HEARTS, Card.Rank.ACE),
+            Card(Card.Suit.HEARTS, Card.Rank.N4),
+            Card(Card.Suit.SPADES, Card.Rank.N4),
+            Card(Card.Suit.SPADES, Card.Rank.ACE)) );
+        val lowerFullHand = PokerHand(arrayOf<Card>(Card(Card.Suit.CLUBS, Card.Rank.N4),
+            Card(Card.Suit.HEARTS, Card.Rank.N7),
+            Card(Card.Suit.HEARTS, Card.Rank.N4),
+            Card(Card.Suit.SPADES, Card.Rank.N4),
+            Card(Card.Suit.SPADES, Card.Rank.N7)) );
+        assertTrue(lowerFullHand.compareTo(upperFullHand) < 1);
+    }
+
+    @Test
+    fun shouldCompareFullCardsHandsWhenEqualsCorrectly() {
+        val upperFullHand = PokerHand(arrayOf<Card>(Card(Card.Suit.CLUBS, Card.Rank.N4),
+            Card(Card.Suit.HEARTS, Card.Rank.ACE),
+            Card(Card.Suit.HEARTS, Card.Rank.N4),
+            Card(Card.Suit.SPADES, Card.Rank.N4),
+            Card(Card.Suit.SPADES, Card.Rank.ACE)) );
+        val equalFullHand = PokerHand(arrayOf<Card>(Card(Card.Suit.CLUBS, Card.Rank.N4),
+            Card(Card.Suit.CLUBS, Card.Rank.ACE),
+            Card(Card.Suit.HEARTS, Card.Rank.N4),
+            Card(Card.Suit.SPADES, Card.Rank.N4),
+            Card(Card.Suit.DIAMONDS, Card.Rank.ACE)) );
+        assertTrue(upperFullHand.compareTo(equalFullHand) == 0);
+    }
+
     // COLOR Card Tests
 
     @Test
@@ -156,6 +201,21 @@ class PokerHandTest {
         val pair = pokerHand.getRank();
         assertEquals(PokerHand.Rank.COLOR, pair.first);
         assertEquals(Card.Rank.JACK, pair.second[0].rank);
+    }
+
+    @Test
+    fun shouldCompareColorCardsHandCorrectly() {
+        val upperColorHand = PokerHand(arrayOf<Card>(Card(Card.Suit.CLUBS, Card.Rank.N4),
+            Card(Card.Suit.CLUBS, Card.Rank.JACK),
+            Card(Card.Suit.CLUBS, Card.Rank.N3),
+            Card(Card.Suit.CLUBS, Card.Rank.N2),
+            Card(Card.Suit.CLUBS, Card.Rank.N6)) );
+        val lowerColorHand = PokerHand(arrayOf<Card>(Card(Card.Suit.CLUBS, Card.Rank.N4),
+            Card(Card.Suit.CLUBS, Card.Rank.JACK),
+            Card(Card.Suit.CLUBS, Card.Rank.N3),
+            Card(Card.Suit.CLUBS, Card.Rank.N2),
+            Card(Card.Suit.CLUBS, Card.Rank.N5)) );
+        assertTrue(lowerColorHand.compareTo(upperColorHand) < 0);
     }
 
     // STRAIGHT Cards tests
@@ -183,6 +243,21 @@ class PokerHandTest {
         assertEquals(Card.Rank.N3, pair.second[0].rank);
     }
 
+    @Test
+    fun shouldCompareStraightHandCardsCorrectly() {
+        val upperStraightHand = PokerHand(arrayOf<Card>(Card(Card.Suit.CLUBS, Card.Rank.JACK),
+            Card(Card.Suit.HEARTS, Card.Rank.QUEEN),
+            Card(Card.Suit.HEARTS, Card.Rank.N9),
+            Card(Card.Suit.SPADES, Card.Rank.N10),
+            Card(Card.Suit.SPADES, Card.Rank.N8)) );
+        val lowerStraightHand = PokerHand(arrayOf<Card>(Card(Card.Suit.CLUBS, Card.Rank.JACK),
+            Card(Card.Suit.HEARTS, Card.Rank.QUEEN),
+            Card(Card.Suit.HEARTS, Card.Rank.ACE),
+            Card(Card.Suit.SPADES, Card.Rank.N2),
+            Card(Card.Suit.SPADES, Card.Rank.KING)) );
+        assertTrue(lowerStraightHand.compareTo(upperStraightHand) < 0);
+    }
+
     // TRIPLE Cards tests
 
     @Test
@@ -195,6 +270,36 @@ class PokerHandTest {
         val pair = pokerHand.getRank();
         assertEquals(PokerHand.Rank.TRIPLE, pair.first);
         assertEquals(Card.Rank.N4, pair.second[0].rank);
+    }
+
+    @Test
+    fun shouldCompareTripleHandsCardsWithDifferentTriplesCorrectly() {
+        val upperTripleHand = PokerHand(arrayOf<Card>(Card(Card.Suit.CLUBS, Card.Rank.N4),
+            Card(Card.Suit.HEARTS, Card.Rank.ACE),
+            Card(Card.Suit.HEARTS, Card.Rank.N4),
+            Card(Card.Suit.SPADES, Card.Rank.N4),
+            Card(Card.Suit.SPADES, Card.Rank.N6)) );
+        val lowerTripleHand = PokerHand(arrayOf<Card>(Card(Card.Suit.CLUBS, Card.Rank.N2),
+            Card(Card.Suit.HEARTS, Card.Rank.ACE),
+            Card(Card.Suit.HEARTS, Card.Rank.N2),
+            Card(Card.Suit.SPADES, Card.Rank.N2),
+            Card(Card.Suit.SPADES, Card.Rank.N6)) );
+        assertTrue(lowerTripleHand.compareTo(upperTripleHand) < 0);
+    }
+
+    @Test
+    fun shouldCompareTripleHandsCardsWithEqualsTriplesCorrectly() {
+        val upperTripleHand = PokerHand(arrayOf<Card>(Card(Card.Suit.CLUBS, Card.Rank.N4),
+            Card(Card.Suit.HEARTS, Card.Rank.ACE),
+            Card(Card.Suit.HEARTS, Card.Rank.N4),
+            Card(Card.Suit.SPADES, Card.Rank.N4),
+            Card(Card.Suit.SPADES, Card.Rank.N6)) );
+        val lowerTripleHand = PokerHand(arrayOf<Card>(Card(Card.Suit.CLUBS, Card.Rank.N4),
+            Card(Card.Suit.HEARTS, Card.Rank.ACE),
+            Card(Card.Suit.HEARTS, Card.Rank.N4),
+            Card(Card.Suit.SPADES, Card.Rank.N4),
+            Card(Card.Suit.SPADES, Card.Rank.N5)) );
+        assertTrue(lowerTripleHand.compareTo(upperTripleHand) < 0);
     }
 
     // DOUBLE PAIR Cards tests
@@ -212,6 +317,51 @@ class PokerHandTest {
         assertEquals(Card.Rank.N2, pair.second[2].rank);
     }
 
+    @Test
+    fun shouldCompareDoublePairHandsCardsByHighestPair() {
+        val upperDoublePairHand = PokerHand(arrayOf<Card>(Card(Card.Suit.SPADES, Card.Rank.N2),
+            Card(Card.Suit.HEARTS, Card.Rank.ACE),
+            Card(Card.Suit.HEARTS, Card.Rank.N4),
+            Card(Card.Suit.SPADES, Card.Rank.N4),
+            Card(Card.Suit.CLUBS, Card.Rank.N2)) );
+        val lowerDoublePairHand = PokerHand(arrayOf<Card>(Card(Card.Suit.SPADES, Card.Rank.N2),
+            Card(Card.Suit.HEARTS, Card.Rank.ACE),
+            Card(Card.Suit.HEARTS, Card.Rank.N3),
+            Card(Card.Suit.SPADES, Card.Rank.N3),
+            Card(Card.Suit.CLUBS, Card.Rank.N2)) );
+        assertTrue(lowerDoublePairHand.compareTo(upperDoublePairHand) <0);
+    }
+
+    @Test
+    fun shouldCompareDoublePairHandsCardsBySecondHighestPair() {
+        val upperDoublePairHand = PokerHand(arrayOf<Card>(Card(Card.Suit.SPADES, Card.Rank.N3),
+            Card(Card.Suit.HEARTS, Card.Rank.ACE),
+            Card(Card.Suit.HEARTS, Card.Rank.N4),
+            Card(Card.Suit.SPADES, Card.Rank.N4),
+            Card(Card.Suit.CLUBS, Card.Rank.N3)) );
+        val lowerDoublePairHand = PokerHand(arrayOf<Card>(Card(Card.Suit.SPADES, Card.Rank.N2),
+            Card(Card.Suit.HEARTS, Card.Rank.ACE),
+            Card(Card.Suit.HEARTS, Card.Rank.N4),
+            Card(Card.Suit.SPADES, Card.Rank.N4),
+            Card(Card.Suit.CLUBS, Card.Rank.N2)) );
+        assertTrue(lowerDoublePairHand.compareTo(upperDoublePairHand) <0);
+    }
+
+    @Test
+    fun shouldCompareDoublePairHandsCardsByFifthCard() {
+        val upperDoublePairHand = PokerHand(arrayOf<Card>(Card(Card.Suit.SPADES, Card.Rank.N3),
+            Card(Card.Suit.HEARTS, Card.Rank.ACE),
+            Card(Card.Suit.HEARTS, Card.Rank.N4),
+            Card(Card.Suit.SPADES, Card.Rank.N4),
+            Card(Card.Suit.CLUBS, Card.Rank.N3)) );
+        val lowerDoublePairHand = PokerHand(arrayOf<Card>(Card(Card.Suit.SPADES, Card.Rank.N3),
+            Card(Card.Suit.HEARTS, Card.Rank.N10),
+            Card(Card.Suit.HEARTS, Card.Rank.N4),
+            Card(Card.Suit.SPADES, Card.Rank.N4),
+            Card(Card.Suit.CLUBS, Card.Rank.N3)) );
+        assertTrue(lowerDoublePairHand.compareTo(upperDoublePairHand) <0);
+    }
+
     // PAIR Cards tests
 
     @Test
@@ -226,6 +376,21 @@ class PokerHandTest {
         assertEquals(Card.Rank.N4, pair.second[0].rank);
     }
 
+    @Test
+    fun shouldComparePairHandsCardsByPair() {
+        val upperPairHand = PokerHand(arrayOf<Card>(Card(Card.Suit.SPADES, Card.Rank.N2),
+            Card(Card.Suit.HEARTS, Card.Rank.ACE),
+            Card(Card.Suit.HEARTS, Card.Rank.N4),
+            Card(Card.Suit.SPADES, Card.Rank.ACE),
+            Card(Card.Suit.SPADES, Card.Rank.N6)) );
+        val lowerPairHand = PokerHand(arrayOf<Card>(Card(Card.Suit.SPADES, Card.Rank.N2),
+            Card(Card.Suit.HEARTS, Card.Rank.ACE),
+            Card(Card.Suit.HEARTS, Card.Rank.N4),
+            Card(Card.Suit.SPADES, Card.Rank.N4),
+            Card(Card.Suit.SPADES, Card.Rank.N6)) );
+        assertTrue(lowerPairHand.compareTo(upperPairHand) <0);
+    }
+
     //HIGHEST Card tests
 
     @Test
@@ -238,5 +403,50 @@ class PokerHandTest {
         val pair = pokerHand.getRank();
         assertEquals(PokerHand.Rank.HIGHEST, pair.first);
         assertEquals(Card.Rank.ACE, pair.second[0].rank);
+    }
+
+    @Test
+    fun shouldCompareHighestCardCorrectly() {
+        val upperHighestCardHand = PokerHand(arrayOf<Card>(Card(Card.Suit.SPADES, Card.Rank.N2),
+            Card(Card.Suit.HEARTS, Card.Rank.ACE),
+            Card(Card.Suit.HEARTS, Card.Rank.N4),
+            Card(Card.Suit.SPADES, Card.Rank.N5),
+            Card(Card.Suit.SPADES, Card.Rank.N6)) );
+        val lowerHighestCardHand = PokerHand(arrayOf<Card>(Card(Card.Suit.SPADES, Card.Rank.N2),
+            Card(Card.Suit.HEARTS, Card.Rank.QUEEN),
+            Card(Card.Suit.HEARTS, Card.Rank.N4),
+            Card(Card.Suit.SPADES, Card.Rank.N5),
+            Card(Card.Suit.SPADES, Card.Rank.N6)) );
+        assertTrue(lowerHighestCardHand.compareTo(upperHighestCardHand) < 0);
+    }
+
+    @Test
+    fun shouldCompareHighestCardCorrectlyByAnotherCards() {
+        val upperHighestCardHand = PokerHand(arrayOf<Card>(Card(Card.Suit.SPADES, Card.Rank.N3),
+            Card(Card.Suit.HEARTS, Card.Rank.ACE),
+            Card(Card.Suit.HEARTS, Card.Rank.N4),
+            Card(Card.Suit.SPADES, Card.Rank.N5),
+            Card(Card.Suit.SPADES, Card.Rank.N6)) );
+        val lowerHighestCardHand = PokerHand(arrayOf<Card>(Card(Card.Suit.SPADES, Card.Rank.N2),
+            Card(Card.Suit.HEARTS, Card.Rank.ACE),
+            Card(Card.Suit.HEARTS, Card.Rank.N4),
+            Card(Card.Suit.SPADES, Card.Rank.N5),
+            Card(Card.Suit.SPADES, Card.Rank.N6)) );
+        assertTrue(lowerHighestCardHand.compareTo(upperHighestCardHand) < 0);
+    }
+
+    @Test
+    fun shouldCompareHighestCardCorrectlyWithEqualValueCards() {
+        val upperHighestCardHand = PokerHand(arrayOf<Card>(Card(Card.Suit.SPADES, Card.Rank.N3),
+            Card(Card.Suit.HEARTS, Card.Rank.ACE),
+            Card(Card.Suit.HEARTS, Card.Rank.N4),
+            Card(Card.Suit.SPADES, Card.Rank.N5),
+            Card(Card.Suit.SPADES, Card.Rank.N6)) );
+        val equalsHighestCardHand = PokerHand(arrayOf<Card>(Card(Card.Suit.SPADES, Card.Rank.N3),
+            Card(Card.Suit.HEARTS, Card.Rank.ACE),
+            Card(Card.Suit.HEARTS, Card.Rank.N4),
+            Card(Card.Suit.SPADES, Card.Rank.N5),
+            Card(Card.Suit.SPADES, Card.Rank.N6)) );
+        assertTrue(upperHighestCardHand.compareTo(equalsHighestCardHand) == 0);
     }
 }
