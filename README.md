@@ -1,2 +1,3 @@
 # pokerchu
-No basic content has been added.
+
+A poker simulator.
